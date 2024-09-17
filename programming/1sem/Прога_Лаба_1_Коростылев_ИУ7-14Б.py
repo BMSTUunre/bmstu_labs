@@ -26,7 +26,7 @@ l_cone_facet = sqrt(r_cone ** 2 + h_cone ** 2)  # длина образующе�
 v_sphere = 4 / 3 * pi * r_sphere ** 3  # объем шара
 v_small_segment = pi * h_cone ** 2 * (3 * r_sphere - h_cone) / 3 # объем отсеченнной части шара
 v_big_segment = v_sphere - v_small_segment  # объем большей части шара после отсечения
-v_cone = r_cone * h_cone * 1/3  # объем конуса
+v_cone = 1/3 * pi * h_cone * r_cone ** 2  # объем конуса
 v_sector = v_big_segment + v_cone  # объем шарового сектора
 
 
