@@ -22,3 +22,4 @@ y3 = float(input("Введите значение координаты y для 
 ab = sqrt(abs(x1 - x2) ** 2 + abs(y1 - y2) ** 2)
 bc = sqrt(abs(x2 - x3) ** 2 + abs(y2 - y3) ** 2)
 ac = sqrt(abs(x1 - x3) ** 2 + abs(y1 - y3) ** 2)
+
