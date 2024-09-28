@@ -17,6 +17,7 @@ def task2():
             odd += 1
         else:
             even += 1
+        n //= 10
         n = int(input("Введите число: "))
 
     if odd > even:
