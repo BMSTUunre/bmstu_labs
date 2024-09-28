@@ -3,7 +3,7 @@ def task1():
     y = 0
     z = -1
     for i in range(2, 22, 2):
-        y += z * (x ** i) / i * (x + 1 + i)
+        y += z * (x ** i) / (2 ** (i / 2)) * (x + 1 + i)
         z *= -1
     print('Значение y:', y)
 
