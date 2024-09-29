@@ -24,12 +24,12 @@ if r_sphere > 0:
 
         # Блок 4 - вычисление параметров объема
         v_sphere = 4 / 3 * pi * r_sphere ** 3  # v шара
-        v_small_segment = pi * h_cone ** 2 * (3 * r_sphere - h_cone) / 3  # v отсеченнной части шара
+        v_small_segment = pi * h_cone ** 2 * (3 * r_sphere - h_cone) / 3  # v отсеченной части шара
         v_big_segment = v_sphere - v_small_segment  # v большей части шара после отсечения
         v_cone = s_cone_base * h_cone * 1/3  # v конуса
         v_sector = v_big_segment + v_cone  # v шарового сектора
 
-        # Блок 5 - вычисление паратметров площади
+        # Блок 5 - вычисление параметров площади
         s_sphere = 4 * pi * r_sphere ** 2  # s поверхности шара
         s_small_segment = 2 * pi * r_sphere * h_cone  # s сферической части отсеченного сегмента
         s_big_segment = s_sphere - s_small_segment  # s большей сферической части шара после отсечения
