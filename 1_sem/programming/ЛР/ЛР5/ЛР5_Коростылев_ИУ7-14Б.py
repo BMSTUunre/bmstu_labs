@@ -90,7 +90,7 @@ if min_y <= 0 <= max_y:
             spaces_0_to_cur = int((cur_y) // eps - 1)
             spaces_cur_to_max = int((max_y - cur_y + (eps / 2)) // eps - 1)
             print(' ' * spaces_min_to_0 + '|' + ' ' * spaces_0_to_cur + "*" + ' ' * spaces_cur_to_max)
-else:x
+else:
     for x_step in range(x_lines_num):
         cur_x = x_0 + x_step * step
         print('|{0:^7.2}|'.format(cur_x), end='')
