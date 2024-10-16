@@ -20,13 +20,15 @@ def main():
     x_ind = int(input('Введите значение, которое необходимо вставить\n> '))
     ind = int(input('Введите индекс, куда необходимо его вставить\n> '))
 
+    while 0 > ind or ind > len(arr):
+        ind = int(input("Введите адекватное целочисленное значение\n> "))
+
     # Блок 1: Вставка элемента и вывод нового массива
     arr.append(0)
-    for i in range(len(arr) - 1, -1, -1):
-        if i == ind:
-            arr[i] = x_ind
-            break
+    for i in range(len(arr) - 1, ind, -1):
         arr[i] = arr[i - 1]
+
+    arr[ind] = x_ind
 
     print(arr)
 

@@ -23,7 +23,7 @@ def main():
     min_neg_value = False
 
     for index, x in enumerate(arr):
-        if x == 0 and first_0_index == False:
+        if x == 0 and first_0_index is False:
             first_0_index = index
         elif (min_neg_index == False and x < 0) or x < min_neg_value:
             min_neg_index = index

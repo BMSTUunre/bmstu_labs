@@ -19,6 +19,9 @@ def main():
 
     ind = int(input('Введите индекс элемента, который надо удалить\n> '))
 
+    while 0 > ind or ind >= len(arr):
+        ind = int(input("Введите адекватное целочисленное значение\n> "))
+
     # Блок 1: Удаление элемента и вывод нового массива
     for i in range(ind, len(arr) - 1):
         arr[i] = arr[i + 1]
