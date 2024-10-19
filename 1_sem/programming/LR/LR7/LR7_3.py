@@ -15,7 +15,7 @@ def main():
     while new_line := input('> '):
         array.append(new_line)
 
-    # block 1:
+    # Блок 1: сама магия
     answer_line = ''
     max_num_of_spaces = 0
 
