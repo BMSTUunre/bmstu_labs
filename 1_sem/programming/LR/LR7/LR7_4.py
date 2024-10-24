@@ -11,9 +11,10 @@ A - 65 Z - 90 a - 97 z - 122
 
 
 def main():
-    # Блок 0: Ввод массива.
+    # Блок 0: Ввод массива и создание кортежа заглавных гласных.
     print('Вводите строки массива по одной, ввод всего списка оканчивается пустой строкой')
     array = []
+    glas = ("A", "E", "U", "I", "O", "Y")
     while new_line := input('> '):
         array.append(new_line)
 
@@ -22,7 +23,7 @@ def main():
         line = array[index]
         new_line = ''  # будем заменять целый элемент массива
         for letter in line:
-            if 65 <= ord(letter) <= 90:  # если символ является строчной заглавной
+            if (65 <= ord(letter) <= 90) and (letter in glas):  # если символ является заглавной согласной
                 new_line += chr(ord(letter) + 32)  # сдвигаем по unicode таблице
             else:
                 new_line += letter  # иначе не меняем
@@ -32,4 +33,4 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    print(main())
