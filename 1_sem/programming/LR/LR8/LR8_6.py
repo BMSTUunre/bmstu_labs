@@ -14,7 +14,7 @@ def main():
 
     matrix = []
     while line := input('> '):
-        matrix.append([int(x) for x in line.split()])
+        matrix.append([x for x in line.split()])
 
     # Блок 1: Обработка матрицы.
     for i in range(len(matrix)):
