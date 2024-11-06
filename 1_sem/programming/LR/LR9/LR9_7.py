@@ -18,7 +18,7 @@ def main():
     for x_ind in range(x):
         matrix = []
         for y_ind in range(y):
-            array = [int(i) for i in input(f'Введите {y_ind} строку {x_ind} матрицы\n> ').strip().split()]
+            array = [int(i) for i in input(f'\nВведите {y_ind} строку {x_ind} матрицы\n> ').strip().split()]
             matrix.append(array)
         mega_matrix.append(matrix)
 
