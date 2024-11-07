@@ -25,16 +25,16 @@ def main():
         print('\b\b]')
 
     # 1 по часовой:
-    for layer in range(len(matrix) // 2):
-        first = layer
-        last = len(matrix) - 1 - layer
-        for i in range(first, last):
-            offset = i - first
-            top = matrix[first][i]
-            matrix[first][i] = matrix[last - offset][first]
-            matrix[last - offset][first] = matrix[last][last - offset]
-            matrix[last][last - offset] = matrix[i][last]
-            matrix[i][last] = top
+    n = len(matrix)
+    for i in range((n + 1) // 2):
+        for j in range(n // 2):
+            (matrix[i][j],
+             matrix[j][n - i - 1],
+             matrix[n - i - 1][n - j - 1],
+             matrix[n - j - 1][i]) = (matrix[j][n - i - 1],
+                                      matrix[n - i - 1][n - j - 1],
+                                      matrix[n - j - 1][i],
+                                      matrix[i][j])
 
     print("\nПромежуточная:")
     for line in matrix:
@@ -44,16 +44,15 @@ def main():
         print('\b\b]')
 
     # 2: против часовой
-    for layer in range(len(matrix) // 2):
-        first = layer
-        last = len(matrix) - 1 - layer
-        for i in range(first, last):
-            offset = i - first
-            top = matrix[first][i]
-            matrix[first][i] = matrix[i][last]
-            matrix[i][last] = matrix[last][last - offset]
-            matrix[last][last - offset] = matrix[last - offset][first]
-            matrix[last - offset][first] = top
+    for i in range((n + 1) // 2):
+        for j in range(n // 2):
+            (matrix[i][j], 
+             matrix[j][n - i - 1], 
+             matrix[n - i - 1][n - j - 1], 
+             matrix[n - j - 1][i]) = (matrix[n - j - 1][i], 
+                                 matrix[i][j], 
+                                 matrix[j][n - i - 1],
+                                 matrix[n - i - 1][n - j - 1])
 
     # 4 итоговая:
     print('\nИтоговая:')
@@ -72,9 +71,9 @@ if __name__ == '__main__':
 1  2  3  4
 5  6  7  8
 
-5  1  5  1
-6  2  6  2
-7  3  7  3
-8  4  8  4
+[  4,   8,   4,   8]
+[  3,   7,   3,   7]
+[  2,   6,   2,   6]
+[  1,   5,   1,   5]
 
 '''
