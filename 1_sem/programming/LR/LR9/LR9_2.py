@@ -15,7 +15,11 @@ def main():
     print('Вводите матрицу построчно, пробелами разделяя элементы\nВвод заканчивается пусто строкой\n')
     matrix = []
     while line := input('> '):
-        matrix.append([int(x) for x in line.split()])
+        matrix.append([int(x) for x in line.split()])  #
+
+    if len(matrix) != len(matrix[0]):
+        print('Матрица не квадратная')
+        return
 
     print("\nИсходная:")
     for line in matrix:
@@ -24,7 +28,7 @@ def main():
             print(str(x).rjust(3), end=', ')
         print('\b\b]')
 
-    # 1 по часовой:
+    # разворот по часовой:
     n = len(matrix)
     for i in range((n + 1) // 2):
         for j in range(n // 2):
@@ -43,7 +47,7 @@ def main():
             print(str(x).rjust(3), end=', ')
         print('\b\b]')
 
-    # 2: против часовой
+    # разворот против часовой
     for i in range((n + 1) // 2):
         for j in range(n // 2):
             (matrix[i][j], 
@@ -54,7 +58,7 @@ def main():
                                  matrix[j][n - i - 1],
                                  matrix[n - i - 1][n - j - 1])
 
-    # 4 итоговая:
+    # итоговая:
     print('\nИтоговая:')
     for line in matrix:
         print('[', end='')

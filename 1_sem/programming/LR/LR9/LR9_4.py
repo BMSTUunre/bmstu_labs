@@ -21,7 +21,7 @@ def main():
     print('Вводите элементы списка I по одному, ввод всего списка оканчивается пустой строкой')
     i_list = []
     while new_line := input('> ').strip():
-        while not new_line.isalnum() or int(new_line) > len(d_matrix) :
+        while not new_line.isalnum() or int(new_line) >= len(d_matrix) :
             print('чет значение не похоже на адекватное введи новое')
             new_line = input('> ')
         i_list.append(int(new_line))
@@ -32,7 +32,8 @@ def main():
     for index in i_list:
         for x in d_matrix[index]:
             if r_list[index] is None or x > r_list[index]:
-                r_list[index] = x
+                r_list[index] = x  #
+        # s +=
 
     sum_avg = 0
     for x in r_list:
@@ -56,7 +57,7 @@ def main():
     for x in r_list:
         print('{:>6.2f}'.format(x), end='  ')
 
-    print("\nAvg for R list:", average_r_list)
+    print("\nAvg for R list:", average_r_list)  #
 
 
 if __name__ == '__main__':

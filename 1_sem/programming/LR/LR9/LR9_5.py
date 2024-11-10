@@ -8,6 +8,7 @@
 В. Вывести все матрицы в виде матриц.
 """
 
+
 def main():
     # 0:
     print('Вводите матрицу A построчно, пробелами разделяя элементы\nВвод заканчивается пусто строкой\n')
@@ -20,14 +21,33 @@ def main():
     while line := input('> '):
         b_matrix.append([int(x) for x in line.split()])
 
-    if len(a_matrix) != len(b_matrix) or len(a_matrix[0]) != len(b_matrix[0]):
-        print('Матрицы тухлые.')
+    if len(a_matrix[0]) != len(b_matrix) or len(a_matrix) != len(b_matrix[0]):
+        print('Матрицы не подходят')
         return
 
+    # 1:
+    if len(a_matrix) > len(b_matrix):
+        line = a_matrix
+        min_measure = len(b_matrix)
+    else:
+        line = b_matrix
+        min_measure = len(a_matrix)
 
-    # 1: Да, это можно сделать длиннее, но нафига если и так понятно
-    c_matrix = [[a_matrix[i][j] * b_matrix[i][j] for j in range(len(a_matrix[i]))] for i in range(len(a_matrix))]
+    if len(a_matrix[0]) > len(b_matrix[0]):
+        col = a_matrix
+    else:
+        col = b_matrix
 
+
+
+    c_matrix = [[0 for _ in range(len(col[0]))] for _ in range(len(line))]
+
+    for i in range(len(line)):
+        for j in range(len(col[0])):
+            x = 0
+            for u in range(min_measure):
+                x += line[i][u] * col[u][j]
+            c_matrix[i][j] = x
 
     # 2:
     print('Матрица A:')

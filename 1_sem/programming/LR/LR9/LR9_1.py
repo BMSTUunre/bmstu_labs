@@ -9,9 +9,8 @@
     𝑚_𝑖𝑗 = 𝑎_𝑖 * 𝑏_𝑗.
 
 Определить количество полных квадратов в каждой строке матрицы.
-Записать значения в массив S. Напечатать матрицу M в виде матрицы и рядом столбецS.
+Записать значения в массив S. Напечатать матрицу M в виде матрицы и рядом столбец S.
 """
-from aiogram.utils.formatting import as_list
 
 
 def main():
@@ -33,13 +32,8 @@ def main():
         b_list.append(int(new_line))
 
 
-    # 1: Создание новой матрицы и ее заполнение
-    if len(a_list) != len(b_list):
-        print('Списки тухлые.')
-        return
-
-
-    m_matrix = [[0 for _ in range(len(a_list))] for _ in range(len(b_list))]
+    # 1:
+    m_matrix = [[0 for _ in range(len(b_list))] for _ in range(len(a_list))]
 
     for i in range(len(m_matrix)):
         for j in range(len(m_matrix[i])):
@@ -48,18 +42,20 @@ def main():
     # 2:
     s_list = [0 for _ in range(len(m_matrix))]
     for i in range(len(m_matrix)):
+        # s = 0
         for j in range(len(m_matrix[i])):
             x = m_matrix[i][j] ** 0.5
             if x == int(x):
                 s_list[i] += 1
 
+
     # 3:
 
-    for line in m_matrix:
+    for i in range(len(m_matrix)):
         print('[', end='')
-        for x in line:
+        for x in m_matrix[i]:
             print(str(x).rjust(3), end=', ')
-        print('\b\b]')
+        print(f'\b\b]   {s_list[i]}')
 
 if __name__ == '__main__':
     main()
