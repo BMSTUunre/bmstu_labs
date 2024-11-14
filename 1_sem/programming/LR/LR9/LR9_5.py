@@ -21,7 +21,7 @@ def main():
     while line := input('> '):
         b_matrix.append([int(x) for x in line.split()])
 
-    if len(a_matrix[0]) != len(b_matrix) or len(a_matrix) != len(b_matrix[0]):
+    if len(a_matrix[0]) != len(b_matrix):
         print('Матрицы не подходят')
         return
 

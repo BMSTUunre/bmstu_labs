@@ -13,18 +13,12 @@
 
 def main():
     # Блок 0: Ввод матрицы и списка.
-    print('Вводите матрицу D построчно, пробелами разделяя элементы\nВвод заканчивается пусто строкой\n')
+    print('Вводите матрицу D построчно, пробелами разделяя элементы\nВвод заканчивается пустой строкой\n')
     d_matrix = []
     while line := input('> ').strip():
         d_matrix.append([int(x) for x in line.split()])
 
-    print('Вводите элементы списка I по одному, ввод всего списка оканчивается пустой строкой')
-    i_list = []
-    while new_line := input('> ').strip():
-        while not new_line.isalnum() or int(new_line) >= len(d_matrix) :
-            print('чет значение не похоже на адекватное введи новое')
-            new_line = input('> ')
-        i_list.append(int(new_line))
+    i_list = [int(i) for i in line.split('Введите элементы списка I через пробел')]
 
 
     # 1:
@@ -32,14 +26,13 @@ def main():
     for index in i_list:
         for x in d_matrix[index]:
             if r_list[index] is None or x > r_list[index]:
-                r_list[index] = x  #
-        # s +=
+                r_list[index] = x
 
     sum_avg = 0
     for x in r_list:
         sum_avg += x
 
-    average_r_list = sum_avg / len(r_list) if sum_avg else 0
+    average_r_list = sum_avg / len(r_list) if len(r_list) else 0
 
     # 2:
     print("Матрица D:")

@@ -17,16 +17,16 @@ def main():
     # Блок 0: Ввод матриц.
     print('Вводите элементы списка A по одному, ввод всего списка оканчивается пустой строкой')
     a_list = []
-    while new_line := input('> ').lstrip('-').strip():
-        while not new_line.isalnum():
+    while new_line := input('> ').strip():
+        while not new_line.lstrip('-').isalnum():
             print('чет значение не похоже на адекватное введи новое')
             new_line = input('> ')
         a_list.append(int(new_line))
 
     print('Вводите элементы списка B по одному, ввод всего списка оканчивается пустой строкой')
     b_list = []
-    while new_line := input('> ').lstrip('-').strip():
-        while not new_line.isalnum():
+    while new_line := input('> ').strip():
+        while not new_line.lstrip('-').isalnum():
             print('чет значение не похоже на адекватное введи новое')
             new_line = input('> ')
         b_list.append(int(new_line))
@@ -44,11 +44,10 @@ def main():
     for i in range(len(m_matrix)):
         # s = 0
         for j in range(len(m_matrix[i])):
-            x = m_matrix[i][j] ** 0.5
-            if x == int(x):
-                s_list[i] += 1
-
-
+            if m_matrix[i][j] > 0:
+                x = m_matrix[i][j] ** 0.5
+                if x == int(x):
+                    s_list[i] += 1
     # 3:
 
     for i in range(len(m_matrix)):
