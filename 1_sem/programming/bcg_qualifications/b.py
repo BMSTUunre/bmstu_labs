@@ -1,3 +1,4 @@
+"done"
 n = int(input())
 monets = sorted([int(i) for i in input().split()])
 target = int(input())

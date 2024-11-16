@@ -1,3 +1,4 @@
+"done"
 string = input()
 diction = {}
 

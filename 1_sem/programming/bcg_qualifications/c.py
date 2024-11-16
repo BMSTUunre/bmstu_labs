@@ -1,3 +1,4 @@
+"done"
 class Village:
     def __init__(self, index):
         self.index = str(index)

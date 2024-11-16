@@ -1,3 +1,4 @@
+"done"
 n, k = (int(i) for i in input().split())
 t = [0 if int(i) >= 7 else 7 - int(i) for i in input().split()]
 c = [int(i) for i in input().split()]
