@@ -1,4 +1,4 @@
-from utils import input_int, cramers_method
+from utils import input_int, cramer_method
 from math import sin, cos
 
 
@@ -37,17 +37,18 @@ def find_antiderivative_by_func(a, b, c):
     return cube_func(a / 3, b / 2, c)
 
 
-def integral_by_antiderivative(x1, x2, antider=None):
+def integral_by_antiderivative(x1, x2, antiderivative=None):
     """
         Находит интеграл функции по разности значений ее первообразной.
     """
-    return antiderivative_func(x2) - antiderivative_func(x1) if antider is None else antider(x2) - antider(x1)
+    return antiderivative_func(x2) - antiderivative_func(x1) if antiderivative is None else antiderivative(x2) - antiderivative(x1)
 
 
 def middle_rectangles(n: int, start: int | float, stop: int | float) -> float:
     """
         Вычисление интеграла методом суммы площадей серединных прямоугольников.
         Складываем все высоты прямоугольников, а потом умножаем на общую ширину
+
     """
     res = 0
     step_x = (stop - start) / n
@@ -84,11 +85,8 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
             [mid_x ** 2,    mid_x, 1,       simple_func(mid_x)],
             [right_x ** 2,  right_x, 1,     simple_func(right_x)]
         ]
-        # #
-        # print('system: ')
-        # print(*system, sep='\n')
-        # #
-        a, b, c = cramers_method(system)
+
+        a, b, c = cramer_method(system)
         antiderivative = find_antiderivative_by_func(a ,b, c)
 
         res += integral_by_antiderivative(x, right_x, antiderivative)
@@ -97,9 +95,9 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
     return res
 
 
-def iterational_calc_n(method_type: int, start: int | float, stop: int | float):
+def iteration_calc_n(method_type: int, start: int | float, stop: int | float):
     """
-       Вычисляет такой N для которго верно неравенство:
+       Вычисляет такой N, для которого верно неравенство:
             |𝐼(𝑁) − 𝐼(2𝑁)| < ε
 
         method type:

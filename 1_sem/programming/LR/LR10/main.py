@@ -27,11 +27,11 @@
 """
 
 from utils import input_int, input_float, draw_table, calc_error
-from integral_utils import middle_rectangles, parabola, integral_by_antiderivative, iterational_calc_n
+from integral_utils import middle_rectangles, parabola, integral_by_antiderivative, iteration_calc_n
 
 
 def main():
-    print('Надеюсь вы задали функцию в нужном файлике.')
+    print('Надеюсь вы задали функцию в нужном файлe..')
 
     start, stop = input_float('Введите начало интегрирования\n> '), input_float('Введите конец интегрирования\n> ')
     n1, n2 = input_int('Введите N1 участков разбиения\n> '), input_int('Введите N2 участков разбиения\n> ')
@@ -63,12 +63,12 @@ def main():
 
     if par1_err[0] == best_calc or par2_err[0] == best_calc:
         print("\nМетод парабол (метод Симпсона) оказался наиболее точным.")
-        calc_n = iterational_calc_n(0, start, stop)
+        calc_n = iteration_calc_n(0, start, stop)
         new_value = middle_rectangles(calc_n, start, stop)
 
     else:
         print("\nМетод серединных прямоугольников оказался наиболее точным.")
-        calc_n = iterational_calc_n(1, start, stop)
+        calc_n = iteration_calc_n(1, start, stop)
         new_value = parabola(calc_n, start, stop)
 
     print('\nПриближенное значение интеграла : {:.10f}'.format(new_value))

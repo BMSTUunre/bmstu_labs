@@ -1,6 +1,6 @@
-def input_int(text: str, allow_nagative=True, allow_zero=True):
+def input_int(text: str, allow_negative=True, allow_zero=True):
     n = input(text).strip()
-    while not ((allow_nagative and n.lstrip('-').isalnum() or n.isalnum()) and (allow_zero or int(n) > 0)):
+    while not ((allow_negative and n.lstrip('-').isalnum() or n.isalnum()) and (allow_zero or int(n) > 0)):
         print('Значение должно быть целочисленным.')
         n = input(text).strip()
     return int(n)
@@ -10,6 +10,7 @@ def input_float(text: str):
     try:
         n = float(input(text))
         return n
+
     except Exception:
         print('Неверное значение, повторите ввод.')
         return input_float(text)
@@ -36,7 +37,7 @@ def matrix_determinant(matrix: list[list[int | float]]) -> int | float:
     return det
 
 
-def cramers_method(system: list[list[int | float]]) -> (float, float):
+def cramer_method(system: list[list[int | float]]) -> (float, float):
     """
         In the system like:
             a_1 * x + b_1 * y + z = d_1
@@ -48,10 +49,6 @@ def cramers_method(system: list[list[int | float]]) -> (float, float):
 
     matrix = [equation[:-1] for equation in system]
     general_det = matrix_determinant(matrix)
-    #
-    # print('matrix: ')
-    # print(*matrix, sep='\n')
-    #
 
     x_matrix = [[el for el in line] for line in matrix]
     y_matrix = [[el for el in line] for line in matrix]
@@ -65,18 +62,6 @@ def cramers_method(system: list[list[int | float]]) -> (float, float):
     x_det = matrix_determinant(x_matrix)
     y_det = matrix_determinant(y_matrix)
     z_det = matrix_determinant(z_matrix)
-
-    #
-    # print(f'general det: {general_det}')
-    # print(f'x det: {x_det}')
-    # print(f'y det: {y_det}')
-    # print(f'Z det: {z_det}')
-    # print('x_matrix')
-    # print(*x_matrix, sep='\n')
-    # print('y_matrix')
-    # print(*y_matrix, sep='\n')
-    # print('z_matrix')
-    # print(*z_matrix, sep='\n')
 
     x, y, z = x_det / general_det, y_det / general_det, z_det / general_det
 
@@ -104,6 +89,7 @@ def draw_table(n1, n2, rect1, rect2, par1, par2):
         print('|', end='')
         print(*stroke, sep='|', end='|\n')
         print(vertical)
+
 
 def calc_error(calc_value, true_value) -> (float, float):
     """
