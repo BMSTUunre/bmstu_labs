@@ -14,7 +14,7 @@ def antiderivative_func(x):
     """
     Необходимо ввести Первообразную заданной функции.
     """
-    return -cos(x)
+    return cos(x)
 
 
 def get_eps():
@@ -74,14 +74,14 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
         n = input_int('Введите кол-во отрезков\n> ')
 
     res = 0
-    x = start
-    step = (stop - start) / n
-    while abs(x - stop) > get_eps():
-        mid_x = x + step
-        right_x = mid_x + step
+    cur_x = start
+    step_x = (stop - start) / n
+    while abs(cur_x - stop) > get_eps():
+        mid_x = cur_x + step_x
+        right_x = mid_x + step_x
 
         system = [
-            [x ** 2,        x, 1,           simple_func(x)],
+            [cur_x ** 2,        cur_x, 1,   simple_func(cur_x)],
             [mid_x ** 2,    mid_x, 1,       simple_func(mid_x)],
             [right_x ** 2,  right_x, 1,     simple_func(right_x)]
         ]
@@ -89,8 +89,8 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
         a, b, c = cramer_method(system)
         antiderivative = find_antiderivative_by_func(a ,b, c)
 
-        res += integral_by_antiderivative(x, right_x, antiderivative)
-        x += 2 * step
+        res += integral_by_antiderivative(cur_x, right_x, antiderivative)
+        cur_x += 2 * step_x
 
     return res
 
