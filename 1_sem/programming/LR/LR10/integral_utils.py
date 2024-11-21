@@ -108,6 +108,6 @@ def iteration_calc_n(method_type: int, start: int | float, stop: int | float, ep
     func = middle_rectangles if method_type == 0 else parabola
 
     n = 1 if method_type == 0 else 2   # так как для метода парабол N должно быть кратно 2
-    while abs(func(n, start, stop) - func(2 * n, start, stop)) >= eps:
+    while abs(func(n, start, stop, eps) - func(2 * n, start, stop, eps)) >= eps:
         n += 1 if method_type == 0 else 2  # так как для метода парабол N должно быть кратно 2
     return n
