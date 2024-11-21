@@ -6,9 +6,12 @@ def input_int(text: str, allow_negative=True, allow_zero=True):
     return int(n)
 
 
-def input_float(text: str):
+def input_float(text: str, only_positive=False, not_null=False):
     try:
         n = float(input(text))
+        while (only_positive and n < 0) or (not_null and n == 0):
+            print('Неверно попробуйте')
+            n = float(input(text))
         return n
 
     except Exception:

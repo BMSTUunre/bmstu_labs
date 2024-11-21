@@ -44,7 +44,7 @@ def integral_by_antiderivative(x1, x2, antiderivative=None):
     return antiderivative_func(x2) - antiderivative_func(x1) if antiderivative is None else antiderivative(x2) - antiderivative(x1)
 
 
-def middle_rectangles(n: int, start: int | float, stop: int | float) -> float:
+def middle_rectangles(n: int, start: int | float, stop: int | float, eps) -> float:
     """
         Вычисление интеграла методом суммы площадей серединных прямоугольников.
         Складываем все высоты прямоугольников, а потом умножаем на общую ширину
@@ -53,7 +53,7 @@ def middle_rectangles(n: int, start: int | float, stop: int | float) -> float:
     res = 0
     step_x = (stop - start) / n
     x = start
-    while abs(x - stop) > get_eps():
+    while abs(x - stop) > eps:
         res += simple_func(x + step_x / 2)
         x += step_x
 
@@ -61,7 +61,7 @@ def middle_rectangles(n: int, start: int | float, stop: int | float) -> float:
     return res
 
 
-def parabola(n: int, start: int | float, stop: int | float) -> float:
+def parabola(n: int, start: int | float, stop: int | float, eps) -> float:
     """
         Вычисление интеграла методом парабол (метод Симпсона).
         Выбираем 3 точки на функции, заносим их координаты в систему уравнений параболы.
@@ -76,7 +76,7 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
     res = 0
     cur_x = start
     step_x = (stop - start) / n
-    while abs(cur_x - stop) > get_eps():
+    while abs(cur_x - stop) > eps:
         mid_x = cur_x + step_x
         right_x = mid_x + step_x
 
@@ -95,7 +95,7 @@ def parabola(n: int, start: int | float, stop: int | float) -> float:
     return res
 
 
-def iteration_calc_n(method_type: int, start: int | float, stop: int | float):
+def iteration_calc_n(method_type: int, start: int | float, stop: int | float, eps):
     """
        Вычисляет такой N, для которого верно неравенство:
             |𝐼(𝑁) − 𝐼(2𝑁)| < ε
@@ -106,7 +106,6 @@ def iteration_calc_n(method_type: int, start: int | float, stop: int | float):
 
     """
     func = middle_rectangles if method_type == 0 else parabola
-    eps = get_eps()
 
     n = 1 if method_type == 0 else 2   # так как для метода парабол N должно быть кратно 2
     while abs(func(n, start, stop) - func(2 * n, start, stop)) >= eps:
