@@ -10,13 +10,13 @@ def input_float(text: str, only_positive=False, not_null=False):
     try:
         n = float(input(text))
         while (only_positive and n < 0) or (not_null and n == 0):
-            print('Неверно попробуйте')
+            print('Неверное значение, повторите ввод.')
             n = float(input(text))
         return n
 
     except Exception:
         print('Неверное значение, повторите ввод.')
-        return input_float(text)
+        return input_float(text, only_positive, not_null)
 
 
 def matrix_determinant(matrix: list[list[int | float]]) -> int | float:
