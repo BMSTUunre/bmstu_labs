@@ -1,6 +1,5 @@
 from random import randint
 from math import floor
-from types import get_original_bases
 
 
 def input_line() -> str:
