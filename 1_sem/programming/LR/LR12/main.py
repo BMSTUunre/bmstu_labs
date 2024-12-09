@@ -68,6 +68,7 @@ texts = [
 
 
 def text_select() -> list[list[str]]:
+    global cur_matrix
     print('Отрывки из введенных текстов:')
     for i in range(len(texts)):
         print(f'\t{i + 1} - {texts[i][:50]}')
@@ -78,8 +79,8 @@ def text_select() -> list[list[str]]:
             break
 
 
-    matrix = text_to_matrix(texts[n])
-    return matrix
+    cur_matrix = text_to_matrix(texts[n])
+    return cur_matrix
 
 
 def text_to_matrix(text: list[str]) -> list[list[str]]:
@@ -110,9 +111,11 @@ def mode_select() -> str:
             3-3\t- Выравнивание по ширине
             4\t- Удаление слова из текста
             5\t- Замена слова из текста
-            6\t- Вычисления ариф. выражения если оно есть\n> """
+            6\t- Вычисления ариф. выражения если оно есть
+            7\t- Найти и удалить предложение с максимальным 
+                количеством слов, начинающихся на заданную букву.\n> """
     )
-    if (n not in ('', '3-1', '3-2', '3-3')) and (int(n) < 0 or int(n) > 6):
+    if (n not in ('', '3-1', '3-2', '3-3')) and (int(n) < 0 or int(n) > 7):
         return mode_select()
     return n
 
