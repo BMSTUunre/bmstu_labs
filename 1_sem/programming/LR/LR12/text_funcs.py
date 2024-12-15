@@ -7,13 +7,13 @@ re_sings = ('["\'#№$' + r'\*\(\[\{]?', r'[\.!:;,\?\)\]\}' + '\'"]?')
 def funcs_list(task: str, matrix: list) -> None | list[list[str]]:
     if not matrix:
         print('Текст не установлен или пустой. \n автоматический выбор пункта 2:')
-        return text_select()
+        matrix =  text_select()
     elif task == "1":
         print_text(matrix)
     elif task == "2":
         matrix = text_select()
     elif task == "3-1":
-        left_align(matrix)
+        matrix = left_align(matrix)
     elif task == "3-2":
         right_align(matrix)
     elif task == "3-3":
@@ -23,7 +23,7 @@ def funcs_list(task: str, matrix: list) -> None | list[list[str]]:
     elif task == "5":
         replace_word(matrix)
     elif task == "6":
-        eval_matrix(matrix)
+        print(*[i for i in f(matrix)], sep='\n')
     elif task == "7":
         find_sentence(matrix)
     else:
@@ -37,15 +37,16 @@ def print_text(matrix: list[list[str]]) -> None:
         print(''.join(line))
 
 
-def left_align(matrix: list[list[str]]) -> None:
+def left_align(matrix: list[list[str]]) -> list[list[str]]:
     for line in matrix:
         for j in range(len(line)):
             line[j] = line[j].strip() + ' '
         line[-1] = line[-1].strip()
     print('>Текст успешно выравнен.')
+    return matrix
 
 
-def right_align(matrix: list[list[str]]) -> None:
+def right_align(matrix: list[list[str]]) -> list[list[str]]:
     left_align(matrix)
     max_len = 0
     for line in matrix:
@@ -58,9 +59,10 @@ def right_align(matrix: list[list[str]]) -> None:
     for line in matrix:
         line[0] = ' ' * (max_len - int(line.pop())) + line[0]
     print('>Текст успешно выравнен.')
+    return matrix
 
 
-def justified_align(matrix: list[list[str]]) -> None:
+def justified_align(matrix: list[list[str]]) -> list[list[str]]:
     left_align(matrix)
     max_len = 0
     for line in matrix:
@@ -75,14 +77,16 @@ def justified_align(matrix: list[list[str]]) -> None:
         spaces = (max_len - int(line_len)) // (len(line) - 1)
         last = (max_len - int(line_len)) % (len(line) - 1)
         if spaces or last:
-            for j in range(len(line) - 1):
+            for j in range(len(line)):
                 line[j] += ' ' * spaces
-            if last:
-                line[-2] += ' ' * last
+                if last:
+                    line[j] += ' '
+                    last -= 1
     print('>Текст успешно выравнен.')
+    return matrix
 
 
-def delete_word(matrix: list[list[str]]) -> None:
+def delete_word(matrix: list[list[str]]) -> list[list[str]]:
     word = input('Введите слово для удаления\n> ')
     for line in matrix:
         for j in range(len(line) - 1, -1, -1):
@@ -92,9 +96,10 @@ def delete_word(matrix: list[list[str]]) -> None:
                     line.pop(j)
     left_align(matrix)
     print(f'#Слово {word} успешно удалено.')
+    return matrix
 
 
-def replace_word(matrix: list[list[str]]) -> None:
+def replace_word(matrix: list[list[str]]) -> list[list[str]]:
     word_find = input('Введите слово для удаления\n> ')
     word_replace = input('Введите слово для замены удаленного\n> ')
     for line in matrix:
@@ -105,39 +110,63 @@ def replace_word(matrix: list[list[str]]) -> None:
                     line.pop(j)
     left_align(matrix)
     print(f'#Слово {word_find} успешно заменено на {word_replace}.')
+    return matrix
 
 
-def eval_matrix(matrix: list[list[str]]):
-    rpn = []
-    for line in matrix:
-        for word in line:
-            for char in word:
-
-
-
+# def eval_matrix(matrix: list[list[str]]):
+#     operators = '+-*/%'
+#     rpn = []
+#     for line in matrix:
+#         last_is_digit = False
+#         last_num = ''
+#         for word in line:
+#             for char in word.strip():
+#                 if char.isdigit():
+#                     if last_is_digit:
+#                         last_num += char
+#                     else:
+#                 if char in operators:
 
 
 def eval_rpn(rpn: list[int | str]) -> int | float:
     cur = rpn.pop(0)
+    priority =  "*/%"
     while rpn:
-        next = rpn.pop(0)
+        print(rpn)
+        next_val = rpn.pop(0)
         action = rpn.pop(0)
+        if rpn:
+            next_action = rpn[1]
+            while rpn and action not in priority and next_action in priority:
+                if next_action in '/%':
+                    if rpn[0] == 0:
+                        print(':: found division by zero ::')
+                        return 0
+                    if next_action == '/':
+                        next_val = next_val / rpn.pop(0)
+                    else:
+                        next_val = next_val % rpn.pop(0)
+                else:
+                    next_val = next_val * rpn.pop(0)
+                rpn.pop(0)
+                if rpn:
+                    next_action = rpn[1]
         if action == "+":
-            cur += next
+            cur += next_val
         elif action == "-":
-            cur -= next
+            cur -= next_val
         elif action == "*":
-            cur *= next
+            cur *= next_val
         elif action == "/":
-            if next == 0:
+            if next_val == 0:
                 print(':: found division by zero ::')
                 return 0
-            cur /= next
+            cur /= next_val
         elif action == "%":
-            cur %= next
+            cur %= next_val
     return cur
 
-def find_sentence(matrix: list[list[str]]) -> None:
+def find_sentence(matrix: list[list[str]]) -> list[list[str]]:
     left_align(matrix)
     letter = input("Введите букву\n> ").strip().lower()[0]
     if not letter.isalpha():
@@ -175,6 +204,8 @@ def find_sentence(matrix: list[list[str]]) -> None:
     if start_ind != (-1, -1) and stop_ind != (-1, -1):
         delete_sentence(matrix, start_ind, stop_ind)
 
+    return matrix
+
 
 def delete_sentence(matrix: list[list[str]],
                     start_ind: tuple[int, int],
@@ -205,3 +236,7 @@ def delete_sentence(matrix: list[list[str]],
     # delete first if it is empty
     if not matrix[start_ind[0]]:
        matrix.pop(start_ind[0])
+
+
+if __name__ == "__main__":
+    print(eval_rpn([1, 2,'-', 1, '+', 1, "+", 241, '+', 2, "*", 1, '-', 100, '*']))
