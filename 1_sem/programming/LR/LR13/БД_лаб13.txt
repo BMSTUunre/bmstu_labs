@@ -1,0 +1,3 @@
+N|Surname|Group|Where is the problem|The problem itself|
+1|Пеньков|14|голова|пустота|2|lol|1|lol|lol|
+2|коростылев|34|инжа|рк|

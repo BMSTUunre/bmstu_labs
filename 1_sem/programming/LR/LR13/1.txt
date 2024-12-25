@@ -1,0 +1,3 @@
+N|Surname|Group|Where is the problem|The problem itself|1|lol|1|lpol|lol|
+N|Surname|Group|Where is the problem|The problem itself|
+1|Пеньков|14|голова|пустота|

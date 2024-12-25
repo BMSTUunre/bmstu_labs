@@ -4,37 +4,41 @@ from main import text_select
 re_sings = ('["\'#№$' + r'\*\(\[\{]?', r'[\.!:;,\?\)\]\}' + '\'"]?')
 
 
-def funcs_list(task: str, matrix: list) -> None | list[list[str]]:
+def funcs_list(task: str, matrix: list, aligned='3-1') -> None | tuple[list[list[str]], str]:
     if not matrix:
         print('Текст не установлен или пустой. \n автоматический выбор пункта 2:')
-        matrix =  text_select()
+        matrix, aligned = text_select()
     elif task == "1":
         print_text(matrix)
     elif task == "2":
-        matrix = text_select()
-    elif task == "3-1":
-        matrix = left_align(matrix)
-    elif task == "3-2":
-        right_align(matrix)
-    elif task == "3-3":
-        justified_align(matrix)
+        matrix, aligned = text_select()
+    elif task in ('3-1', '3-2', '3-3'):
+        matrix, aligned = choose_align(matrix, task)
     elif task == "4":
-        delete_word(matrix)
+        matrix, aligned = delete_word(matrix, aligned)
     elif task == "5":
-        replace_word(matrix)
+        matrix, aligned = replace_word(matrix, aligned)
     elif task == "6":
-        print(*[i for i in f(matrix)], sep='\n')
+        matrix, aligned = eval_matrix(matrix, aligned)
     elif task == "7":
-        find_sentence(matrix)
+        matrix, aligned = find_sentence(matrix, aligned)
     else:
-        '\n......Я вас не понимаю.........\n'
-    return matrix
+        print('\n......Я вас не понимаю.........\n')
+    return matrix, aligned
 
 
 def print_text(matrix: list[list[str]]) -> None:
     print()
     for line in matrix:
         print(''.join(line))
+
+
+def choose_align(matrix: list[list[str]], task: str) -> tuple[list[list[str]], str]:
+    if task == "3-1":
+        return left_align(matrix), "3-1"
+    if task == "3-2":
+        return right_align(matrix), "3-2"
+    return justified_align(matrix), "3-3"
 
 
 def left_align(matrix: list[list[str]]) -> list[list[str]]:
@@ -74,19 +78,20 @@ def justified_align(matrix: list[list[str]]) -> list[list[str]]:
 
     for line in matrix:
         line_len = line.pop()
-        spaces = (max_len - int(line_len)) // (len(line) - 1)
-        last = (max_len - int(line_len)) % (len(line) - 1)
-        if spaces or last:
-            for j in range(len(line)):
-                line[j] += ' ' * spaces
-                if last:
-                    line[j] += ' '
-                    last -= 1
+        if len(line) > 1:
+            spaces = (max_len - int(line_len)) // (len(line) - 1)
+            last = (max_len - int(line_len)) % (len(line) - 1)
+            if spaces or last:
+                for j in range(len(line)):
+                    line[j] += ' ' * spaces
+                    if last:
+                        line[j] += ' '
+                        last -= 1
     print('>Текст успешно выравнен.')
     return matrix
 
 
-def delete_word(matrix: list[list[str]]) -> list[list[str]]:
+def delete_word(matrix: list[list[str]], aligned: str) -> tuple[list[list[str]], str]:
     word = input('Введите слово для удаления\n> ')
     for line in matrix:
         for j in range(len(line) - 1, -1, -1):
@@ -94,12 +99,12 @@ def delete_word(matrix: list[list[str]]) -> list[list[str]]:
                 line[j] = line[j].strip().lower().replace(word.lower(), '')
                 if not line[j]:
                     line.pop(j)
-    left_align(matrix)
+    matrix, _ = choose_align(matrix, aligned)
     print(f'#Слово {word} успешно удалено.')
-    return matrix
+    return matrix, aligned
 
 
-def replace_word(matrix: list[list[str]]) -> list[list[str]]:
+def replace_word(matrix: list[list[str]], aligned: str) -> tuple[list[list[str]], str]:
     word_find = input('Введите слово для удаления\n> ')
     word_replace = input('Введите слово для замены удаленного\n> ')
     for line in matrix:
@@ -108,24 +113,43 @@ def replace_word(matrix: list[list[str]]) -> list[list[str]]:
                 line[j] = line[j].strip().lower().replace(word_find.lower(), word_replace)
                 if not line[j]:
                     line.pop(j)
-    left_align(matrix)
+    matrix, _ = choose_align(matrix, aligned)
     print(f'#Слово {word_find} успешно заменено на {word_replace}.')
-    return matrix
+    return matrix, aligned
 
 
-# def eval_matrix(matrix: list[list[str]]):
-#     operators = '+-*/%'
-#     rpn = []
-#     for line in matrix:
-#         last_is_digit = False
-#         last_num = ''
-#         for word in line:
-#             for char in word.strip():
-#                 if char.isdigit():
-#                     if last_is_digit:
-#                         last_num += char
-#                     else:
-#                 if char in operators:
+def eval_matrix(matrix: list[list[str]], aligned: str) -> tuple:
+    print(matrix)
+    operators = '+-*/%'
+    for line_ind in range(len(matrix)):
+        rpn = []
+        rpn_n = 0
+        start_ind = 0
+        for word_index in range(len(matrix[line_ind])):
+            if matrix[line_ind][word_index].strip().isalnum():
+                if not rpn:
+                    start_ind = word_index
+                rpn.insert(rpn_n - 1, int(matrix[line_ind][word_index].strip()))
+                rpn_n += 1
+            elif matrix[line_ind][word_index].strip() in operators and rpn:
+                rpn_n += 1
+                rpn.append(matrix[line_ind][word_index].strip())
+
+            else:
+                if rpn:
+                    print(rpn)
+                    res = eval_rpn(rpn)
+                    rpn = []
+                    print(res)
+                    matrix[line_ind] = matrix[line_ind][0: start_ind] + [str(res)] + matrix[line_ind][word_index:]
+        if rpn:
+            print(rpn)
+            res = eval_rpn(rpn)
+            print(res)
+            matrix[line_ind] = matrix[line_ind][0: start_ind] + [str(res)]
+
+    matrix, _ = choose_align(matrix, aligned)
+    return matrix, aligned
 
 
 def eval_rpn(rpn: list[int | str]) -> int | float:
@@ -166,7 +190,8 @@ def eval_rpn(rpn: list[int | str]) -> int | float:
             cur %= next_val
     return cur
 
-def find_sentence(matrix: list[list[str]]) -> list[list[str]]:
+
+def find_sentence(matrix: list[list[str]], aligned: str) -> tuple[list[list[str]], str]:
     left_align(matrix)
     letter = input("Введите букву\n> ").strip().lower()[0]
     if not letter.isalpha():
@@ -203,8 +228,8 @@ def find_sentence(matrix: list[list[str]]) -> list[list[str]]:
 
     if start_ind != (-1, -1) and stop_ind != (-1, -1):
         delete_sentence(matrix, start_ind, stop_ind)
-
-    return matrix
+        choose_align(matrix, aligned)
+    return matrix, aligned
 
 
 def delete_sentence(matrix: list[list[str]],
