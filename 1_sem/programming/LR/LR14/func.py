@@ -1,12 +1,12 @@
-import os
-from struct import unpack
+from os import access, R_OK, W_OK
+from os.path import isfile
+from struct import unpack, pack
 from sys import getsizeof
 
 from prettytable import PrettyTable, TableStyle
 
 
 def main_table() -> None:
-
     table = PrettyTable()
     table.field_names = ['№', 'Func']
     table.add_rows([
@@ -24,17 +24,19 @@ def main_table() -> None:
 
 
 columns = ['id', 'username', 'user_id', 'role', 'is_banned']
+line_format = f'h{"c" * 10}l{"c" * 5}?' # short .{10} long ["admin" / " user"] bool
+bytes_in_line = 22  # 2 + 10 + 4 + 5 + 1
 
 
-def display_content(name: str) -> None:
+def display_content(file_name: str) -> None:
     table = PrettyTable()
-    table.field_names(columns)
+    table.field_names = columns
 
-    with (open(name, 'r') as database):
-        for line in database:
-            line_in = [x.strip() for x in line.strip().split('|')]
-            if line_in:
-                table.add_row(line_in)
+    with (open(file_name, 'rb') as database):
+        for raw in database:
+            line = unpack_line(raw)
+            if line:
+                table.add_row(line)
 
     table.set_style(TableStyle(16))
     print(table)
@@ -42,7 +44,7 @@ def display_content(name: str) -> None:
 
 def print_row(line: list) -> None:
     table = PrettyTable()
-    table.field_names(columns)
+    table.field_names = columns
 
     table.add_row(line)
 
@@ -50,32 +52,19 @@ def print_row(line: list) -> None:
     print(table)
 
 
-def file_permissions(name: str) -> str:
-    perm = 'r' if os.access(name, os.R_OK) else '-'
-    perm += 'w' if os.access(name, os.W_OK) else '-'
-    perm += 'x' if os.access(name, os.X_OK) else '-'
+def file_permissions(file_name: str) -> str:
+    perm = 'r' if access(file_name, R_OK) else '-'
+    perm += 'w' if access(file_name, W_OK) else '-'
     return perm
 
 
 def key_index(key: str) -> int:
     if key in columns:
         return columns.index(key)
-    return -1
+    return -1 
 
 
-# def get_val(prompt):
-#     while True:
-#         try:
-#             val = int(input(prompt))
-#             while val < 0 or val > 6:
-#                 val = int(input(prompt))
-#             else:
-#                 return val
-#         except ValueError:
-#             print('Некорректный ввод')
-#
-#
-def input_int(text):
+def input_int(text: str):
     while True:
         try:
             val = int(input(text).strip())
@@ -84,82 +73,100 @@ def input_int(text):
             print('Попробуйте еще раз')
 
 
-
-def choose_file():
-    name = input('Введите имя файла, с которым хотите начать работу: ', )
-    if os.path.isfile(name) and name != '':
-        permissions = file_permissions(name)
-        if "rw" in permissions:
-            return name
-        else:
-            print('У файла недостаточно разрешений: ', permissions)
-            return None
-    else:
-        print('Такого файла не существует')
-        return None
+def init(file_name: str) -> None:
+    if isfile(file_name) or file_permissions(file_name) != 'rw':
+        file = open(file_name, 'wb')
+        file.close()
 
 
-def create_or_overwrite(file, Database):
-    with open(Database, 'r') as database:
-        if file is None:
-            name = input('Введите имя для БД: ', )
-            with open(name, 'a') as file:
-                for line in database:
-                    file.write(line)
-        else:
-            with open(file, 'a') as file:
-                for line in database:
-                    file.write(line)
+def choose_file() -> str:
+    file_name = input('Введите имя файла, c которым хотите начать работу: ', )
+    if file_name != '' and ' ' not in file_name and '/' not in file_name:
+        if file_name.endswith('.bin'):
+            return file_name
+        return file_name + '.bin'
+    print('Мимокрокодил')
+    return choose_file()
 
 
-def add_end(name):
-    line_count = 0
-    with open(name, 'r+') as database:
-        for i in database:
-            last_line = i
-            line_count += 1
-        database.seek(0, 2)
-        surname = input("Фамилия студента: ", )
-        group = input_int("Группа: ")
-        where_is_the_problem = input('Где проблема: ')
-        the_problem_itself = input('Что именно за проблема: ')
-        if line_count == 0:
-            line_count = 1
-        new_line = f'{line_count}|{surname}|{group}|{where_is_the_problem}|{the_problem_itself}|\n'
-        database.write(new_line)
+def unpack_line(raw_line) -> list:
+    unpacked = list(unpack(line_format, raw_line))
+    encoded_name = ''.join([i.decode('utf-8') for i in unpacked[1:11]])
+    encoded_role = ''.join([i.decode('utf-8') for i in unpacked[12:17]])
+    line = [unpacked[0], encoded_name, unpacked[11], encoded_role, unpacked[17]]
+    return line
 
 
-def search_one(name):
-    key = input('Искать по: ')
-    if key in columns:
-        index = key_index(key)
-        keyword = input('Ищем: ')
-        with open(name, 'r+') as database:
-            for raw in database:
-                line = unpack('c' * getsizeof(raw), raw)
-                if line.strip():
-                    line_in = [x for x in line.split('|')]
-                    if keyword == line_in[index]:
-                        print_row(line_in)
-    else:
-        print('Такого поля нет')
+def pack_line(id: int, username: str, user_id: int, 
+              role: str, is_blocked: bool):
+    bytes_name = [bytes(i, 'utf-8') for i in username]
+    bytes_role = [bytes(i, 'utf-8') for i in role]
+    
+    return pack(line_format, id, *bytes_name, user_id, *bytes_role, is_blocked)
 
 
-def search_two(name):
-    key1, key2 = input('Искать по (введи 2 ключа через пробел):\n> ', ).split()
-    while key2 == key1:
-        key2 = input('Поля не могут совпадать\nВведи второй ключ \n>')
-    if key1 in columns and key2 in columns:
-        key1_index = key_index(key1)
-        key2_index = key_index(key2)
-        keyword1 = input('Ищем в первом поле: ', )
-        keyword2 = input('Ищем во втором поле: ', )
-        with open(name, 'r+') as database:
-            for raw in database:
-                line = ''.join(unpack('c' * getsizeof(raw), raw))
-                line_in = [x.strip() for x in line.strip().split('|')]
-                if line_in:
-                    if keyword1 == line_in[key1_index] and keyword2 == line_in[key2_index] :
-                        print_row(line_in)
-    else:
-        print('Какого-то из полей нет(((')
+def file_len(file_name: str):
+    length = 0
+    with open(file_name, "rb") as file:
+        length = getsizeof(file.readline()) // bytes_in_line
+        return length - 1
+
+
+def move_lines(file_name: str, line_ind: int, insert_line) -> None:
+    with open(file_name, "rb+") as orig_file:
+        with open(file_name, 'rb') as read_file:
+            orig_file.seek(bytes_in_line * line_ind)
+            orig_file.write(insert_line)
+            for i in range(line_ind, file_len(file_name)):
+                read_file.seek(bytes_in_line * i)
+                orig_file.write(read_file.read(bytes_in_line))
+
+
+def add_line(file_name: str) -> None:
+    id = input_int("Введите id записи\n> ")
+    username = input("Введите username пользователя\n> ")[:10].ljust(10, ' ')
+    user_id = input_int("Введите user_id пользователя\n> ")
+    db_len = file_len(file_name)
+    line_ind = input_int(f"Введите индекс строки, в которую хотите вставить запись\nТекущая длина {db_len}\n> ")
+    
+    while True:
+        i = input_int("Введите параметр role\n0 - user\n1 - admin\n> ")
+        match i:
+            case 1:
+                role = 'admin'
+                break
+                
+            case 0:
+                role = ' user'
+                break
+        
+            
+    while True:
+        i = input_int("Введите флаг is_blocked\n0 - false\n1 - true\n> ")
+        match i:
+            case 1:
+                is_blocked = True
+                break
+            case 0:
+                is_blocked = False
+                break
+        
+    print(id, username, user_id, role, is_blocked)
+    insert_line = pack_line(id, username, user_id, role, is_blocked)
+    if line_ind >= file_len(file_name):
+        with open(file_name, 'rb+') as file:
+            file.write(insert_line)
+        return 
+    line_ind = max(0, line_ind)
+    move_lines(file_name, line_ind, insert_line)
+
+def del_line(file_name: str) -> None:
+    raise NotImplemented
+
+
+def search_one(file_name: str) -> None:
+    raise NotImplemented
+
+
+def search_two(file_name: str) -> None:
+    raise NotImplemented
