@@ -6,8 +6,8 @@ def main():
     file_name = None
     command = 7
     db = 'БД_лаб14.txt'
-    while command != 0:
-        command = get_val('Выберите команду: ')
+    while command and command != 0:
+        command = input_int('Выберите команду: ')
         match command:
             case 1:
                 file_name = choose_file()

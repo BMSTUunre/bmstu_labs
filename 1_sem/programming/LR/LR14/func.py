@@ -1,4 +1,7 @@
 import os
+from struct import unpack
+from sys import getsizeof
+
 from prettytable import PrettyTable, TableStyle
 
 
@@ -38,7 +41,13 @@ def display_content(name: str) -> None:
 
 
 def print_row(line: list) -> None:
+    table = PrettyTable()
+    table.field_names(columns)
 
+    table.add_row(line)
+
+    table.set_style(TableStyle(16))
+    print(table)
 
 
 def file_permissions(name: str) -> str:
@@ -66,13 +75,14 @@ def key_index(key: str) -> int:
 #             print('Некорректный ввод')
 #
 #
-# def get_int(prompt):
-#     while True:
-#         try:
-#             val = int(input(prompt))
-#             return val
-#         except ValueError:
-#             print('Некорректный ввод')
+def input_int(text):
+    while True:
+        try:
+            val = int(input(text).strip())
+            return val
+        except ValueError:
+            print('Попробуйте еще раз')
+
 
 
 def choose_file():
@@ -110,7 +120,7 @@ def add_end(name):
             line_count += 1
         database.seek(0, 2)
         surname = input("Фамилия студента: ", )
-        group = get_int("Группа: ")
+        group = input_int("Группа: ")
         where_is_the_problem = input('Где проблема: ')
         the_problem_itself = input('Что именно за проблема: ')
         if line_count == 0:
@@ -125,7 +135,8 @@ def search_one(name):
         index = key_index(key)
         keyword = input('Ищем: ')
         with open(name, 'r+') as database:
-            for line in database:
+            for raw in database:
+                line = unpack('c' * getsizeof(raw), raw)
                 if line.strip():
                     line_in = [x for x in line.split('|')]
                     if keyword == line_in[index]:
@@ -144,7 +155,8 @@ def search_two(name):
         keyword1 = input('Ищем в первом поле: ', )
         keyword2 = input('Ищем во втором поле: ', )
         with open(name, 'r+') as database:
-            for line in database:
+            for raw in database:
+                line = ''.join(unpack('c' * getsizeof(raw), raw))
                 line_in = [x.strip() for x in line.strip().split('|')]
                 if line_in:
                     if keyword1 == line_in[key1_index] and keyword2 == line_in[key2_index] :
