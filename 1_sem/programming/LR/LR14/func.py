@@ -26,7 +26,7 @@ def main_table() -> None:
 
 columns = ['id', 'username', 'user_id', 'role', 'is_banned']
 line_format = f'h{"c" * 10}l{"c" * 5}?' # short .{10} long ["admin" / " user"] bool
-bytes_in_line = 30  # 2 + 10 + 4 + 5 + 1
+bytes_in_line = 30
 
 
 def display_content(file_name: str) -> None:
