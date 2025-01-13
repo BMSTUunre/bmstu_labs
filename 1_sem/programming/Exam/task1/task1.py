@@ -9,49 +9,49 @@ out.txt содержимое исходного файла так, чтобы т
 Считывать файл в память целиком нельзя. 
 '''
 
+# решение взято у https://t.me/Krionee 
 
-# def merge_in_out() -> tuple[int, int]:
-#     len_in_file, max_diag_start = 0, 100    
+def count_palindromes_in_string(s: str) -> int:
+    co = 0
+    for i in s.split():
+        current = i.strip("%")
+        if current == current[::-1] and len(current) > 1:
+            co += 1
+    return co
+
+
+with open("exam_task1/in.txt", "r", encoding="utf-8") as file, open("exam_task1/out.txt", "w", encoding="utf-8") as o:
     
-#     with open('in.txt', 'r') as in_file:
-#         with open('out.txt', 'w') as out_file:
-#             while (line := in_file.readline()).strip():
-#                 len_in_file += 1
-#                 max_diag_start = min(max_diag_start, len(line) - len_in_file)
-#                 out_file.write(line)
+    first_string = file.readline()
+    palindromes = [count_palindromes_in_string(first_string)]
+    chars_to_delete = []
+    for i in range(len(first_string)):
+        if first_string[i] == "%":
+            chars_to_delete.append(i)
+                    
+    number_of_next_line = 1
     
-#     return len_in_file, max_diag_start
-
-
-# def delete_diagonal(start_ind: int, len_file: int, file) -> None:
+    next_line = file.readline()
+    
+    while next_line:
+        palindromes.append(count_palindromes_in_string(next_line))
+        for j in chars_to_delete:
+            if next_line[j+number_of_next_line] == "%":
+                continue
+            else:
+                chars_to_delete.remove(j)
+        number_of_next_line +=1 
+        next_line = file.readline()
         
+    file.seek(0)
+    n = 0
+    string = file.readline()
+    while string:
+        char_list = list(string)
+        for i in chars_to_delete[::-1]:
+            char_list.pop(i + n)
         
-
-
-# def main() -> None:
-#     len_in_file, max_diag_start = merge_in_out()
-    
-#     with open('out.txt', 'r+') as out_file:
-#         if max_diag_start >= 0:
-            
-#             for symb_ind in range(max_diag_start, -1, -1): # first line parser, reversed for kill conflicts of deleted diags
-#                 out_file.seek(symb_ind, 0)
-#                 if out_file.read(1) == '%':
-#                     out_file.readline() # skip first line
-#                     for line_ind in range(1, len_in_file):
-#                         out_file.read(symb_ind + line_ind)
-#                         if out_file.read(1) != '%':
-#                             break
-#                         out_file.readline() # skip line
-#                     else:
-#                         delete_diagonal(symb_ind, len_in_file, out_file)
-                        
-
-# if __name__ == '__main__':
-#     main()
-
-
-"""
-идея не плохая но реализация слишком запарная, надо было думать и перезаписывать только нужные диагонали и сразу дописывать кол-во палиндромов
-
-"""
+        res = "".join(char_list).strip("\n") + " " + str(palindromes[n]) + "\n"
+        o.write(res)
+        n += 1
+        string = file.readline()
