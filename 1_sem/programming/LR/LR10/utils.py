@@ -40,7 +40,7 @@ def matrix_determinant(matrix: list[list[int | float]]) -> int | float:
     return det
 
 
-def cramer_method(system: list[list[int | float]]) -> (float, float):
+def cramer_method(system: list[list[int | float]]) -> tuple[float, float]:
     """
         In the system like:
             a_1 * x + b_1 * y + z = d_1
@@ -94,7 +94,7 @@ def draw_table(n1, n2, rect1, rect2, par1, par2):
         print(vertical)
 
 
-def calc_error(calc_value, true_value) -> (float, float):
+def calc_error(calc_value, true_value) -> tuple[float, float]:
     """
     Возвращает относительную и абсолютную погрешность
     """
